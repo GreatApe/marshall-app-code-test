@@ -14,10 +14,12 @@
 		A44615922C945FF000B9B507 /* MarshallCoinTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615912C945FF000B9B507 /* MarshallCoinTests.swift */; };
 		A446159C2C945FF000B9B507 /* MarshallCoinUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A446159B2C945FF000B9B507 /* MarshallCoinUITests.swift */; };
 		A446159E2C945FF000B9B507 /* MarshallCoinUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A446159D2C945FF000B9B507 /* MarshallCoinUITestsLaunchTests.swift */; };
-		A44615AB2C94D23900B9B507 /* CurrencyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615AA2C94D23900B9B507 /* CurrencyView.swift */; };
+		A44615AB2C94D23900B9B507 /* CurrencySelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615AA2C94D23900B9B507 /* CurrencySelectionView.swift */; };
 		A44615AD2C94D2D400B9B507 /* FiatCurrencyClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615AC2C94D2D400B9B507 /* FiatCurrencyClient.swift */; };
 		A44615AF2C94D30700B9B507 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615AE2C94D30700B9B507 /* HomeViewModel.swift */; };
 		A44615B12C94D59900B9B507 /* CoinPriceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B02C94D59900B9B507 /* CoinPriceClient.swift */; };
+		A44615B32C95CFCD00B9B507 /* CoinPricesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */; };
+		A44615B52C95DBFD00B9B507 /* CoinDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,10 +50,12 @@
 		A44615972C945FF000B9B507 /* MarshallCoinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MarshallCoinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A446159B2C945FF000B9B507 /* MarshallCoinUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarshallCoinUITests.swift; sourceTree = "<group>"; };
 		A446159D2C945FF000B9B507 /* MarshallCoinUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MarshallCoinUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		A44615AA2C94D23900B9B507 /* CurrencyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyView.swift; sourceTree = "<group>"; };
+		A44615AA2C94D23900B9B507 /* CurrencySelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencySelectionView.swift; sourceTree = "<group>"; };
 		A44615AC2C94D2D400B9B507 /* FiatCurrencyClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FiatCurrencyClient.swift; sourceTree = "<group>"; };
 		A44615AE2C94D30700B9B507 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
 		A44615B02C94D59900B9B507 /* CoinPriceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinPriceClient.swift; sourceTree = "<group>"; };
+		A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinPricesView.swift; sourceTree = "<group>"; };
+		A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -103,11 +107,13 @@
 			isa = PBXGroup;
 			children = (
 				A44615802C945FEF00B9B507 /* MarshallCoinApp.swift */,
-				A44615822C945FEF00B9B507 /* HomeView.swift */,
 				A44615AE2C94D30700B9B507 /* HomeViewModel.swift */,
+				A44615822C945FEF00B9B507 /* HomeView.swift */,
+				A44615AA2C94D23900B9B507 /* CurrencySelectionView.swift */,
+				A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */,
+				A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */,
 				A44615AC2C94D2D400B9B507 /* FiatCurrencyClient.swift */,
 				A44615B02C94D59900B9B507 /* CoinPriceClient.swift */,
-				A44615AA2C94D23900B9B507 /* CurrencyView.swift */,
 				A44615842C945FF000B9B507 /* Assets.xcassets */,
 				A44615862C945FF000B9B507 /* Preview Content */,
 			);
@@ -270,11 +276,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				A44615832C945FEF00B9B507 /* HomeView.swift in Sources */,
+				A44615B32C95CFCD00B9B507 /* CoinPricesView.swift in Sources */,
+				A44615B52C95DBFD00B9B507 /* CoinDetailsView.swift in Sources */,
 				A44615AD2C94D2D400B9B507 /* FiatCurrencyClient.swift in Sources */,
 				A44615812C945FEF00B9B507 /* MarshallCoinApp.swift in Sources */,
 				A44615B12C94D59900B9B507 /* CoinPriceClient.swift in Sources */,
 				A44615AF2C94D30700B9B507 /* HomeViewModel.swift in Sources */,
-				A44615AB2C94D23900B9B507 /* CurrencyView.swift in Sources */,
+				A44615AB2C94D23900B9B507 /* CurrencySelectionView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

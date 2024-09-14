@@ -1,101 +1,93 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State 
-    private var vm = HomeViewModel(
+    @State private var vm = HomeViewModel(
         fiatCurrencyClient: .mock,
         currencies: [.usd, .sek, .dkk],
         coinPriceClient: .live,
-        coins: ["BTC", "ETH", "SOL"]
+        coins: [1, 1027]
     )
+
+    @State private var showSelectionSheet: Bool = false
+
+    @State private var detailsVM: CoinDetailsViewModel? = nil
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView(.horizontal) {
-                HStack {
-                    ForEach(vm.currencyViewStates) { viewState in
-                        CurrencyView(viewState: viewState) {
-                            vm.selectedCurrency = viewState.id
-                        }
-                    }
-
-                    Button("+") {
-
-                    }
-                    .background {
-                        Circle()
-                            .fill(.blue.opacity(0.5))
-                    }
-                }
-                .padding(.horizontal, 20)
+            CurrencySelectionView(viewStates: vm.currencyViewStates) { currency in
+                vm.selectedCurrency = currency
             }
-            .scrollIndicators(.never)
-            .padding(.bottom, 20)
+            .padding(.bottom, 8)
 
             ScrollView {
-                VStack(spacing: 15) {
-                    ForEach(vm.coinPriceViewStates) { viewState in
-                        CoinPriceView(viewState: viewState)
-                    }
+                CoinPricesView(viewStates: vm.coinPriceViewStates) { coinID in
+                    detailsVM = vm.makeDetailsVM(coinID)
+                } onRemove: { coinID in
+                    vm.removeFromSelection(coinID)
                 }
+
+                PlusButton {
+                    showSelectionSheet.toggle()
+                }
+                .padding(.top, 10)
             }
-            .padding(.horizontal, 20)
         }
         .background(.gray)
         .task {
-            await vm.loadAllCoinPrices()
+            await vm.start()
+        }
+        .sheet(isPresented: $showSelectionSheet) {
+            CoinSelectionView(coins: vm.availableCoins, onSelect: vm.addToSelection)
+        }
+        .sheet(item: $detailsVM) { vm in
+            CoinDetailsView(vm: vm)
         }
     }
 }
 
-struct CoinPriceViewState: Equatable {
-    let symbol: CoinSymbol
-    let name: String?
-    var quote: DatedQuote?
+struct CoinSelectionView: View {
+    @Environment(\.dismiss) private var dismiss
 
-    struct DatedQuote: Equatable {
-        let price: Double
-        let minAgo: Int
-
-        var label: String {
-            minAgo == 0 ? "Just now" : "\(minAgo) min ago"
-        }
-    }
-}
-
-extension CoinPriceViewState: Identifiable {
-    var id: CoinSymbol { symbol }
-}
-
-struct CoinPriceView: View {
-    let viewState: CoinPriceViewState
+    let coins: [CoinPriceViewState]
+    let onSelect: (CoinID) -> Void
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading) {
-                Text(viewState.symbol)
-                    .bold()
+        NavigationStack {
+            CoinPricesView(viewStates: coins, onSelect: onSelect, onRemove: nil)
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbarBackground(.ultraThinMaterial, for: .navigationBar)
+                .toolbar {
+                    ToolbarItem(placement: .principal) {
+                        Text("Select more coins")
+                            .foregroundStyle(.white)
+                    }
 
-                if let name = viewState.name {
-                    Text(name)
-                        .font(.footnote)
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") {
+                            dismiss()
+                        }
+                        .foregroundStyle(.white.opacity(0.8))
+                    }
                 }
-            }
-
-            Spacer()
-
-            if let quote = viewState.quote {
-                VStack(alignment: .trailing) {
-                    Text("\(quote.price, format: .number.precision(.fractionLength(2)))")
-
-                    Text(quote.label)
-                        .font(.footnote)
-                }
-            }
         }
+        .presentationBackground(.ultraThinMaterial)
+        .presentationDetents([.medium, .large])
     }
 }
 
-#Preview {
-    HomeView()
+struct PlusButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            ZStack {
+                Circle()
+                    .fill(.green.opacity(0.4))
+                    .frame(width: 50, height: 50)
+                Image(systemName: "plus")
+                    .font(.title)
+                    .foregroundStyle(.white.opacity(0.8))
+            }
+        }
+    }
 }

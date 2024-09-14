@@ -23,12 +23,10 @@ extension FiatCurrencyClient {
         let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .dkk: (6.5, .now), .sek: (10, .now)])
 
         Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
-            let newSekRate: FiatExchangeRates = [
-                .sek: (Double.random(in: 9...11), .now),
-                .dkk: (Double.random(in: 6...7), .now),
-                .nok: (Double.random(in: 9...11), .now)
-            ]
-            publisher.value.merge(newSekRate) { $1 }
+            let newRates = publisher.value.mapValues {
+                ($0.rate * Double.random(in: 0.98...1.02), Date.now)
+            }
+            publisher.value.merge(newRates) { $1 }
         }
 
         return .init(exchangeRates: { currencies in

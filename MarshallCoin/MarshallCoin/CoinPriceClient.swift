@@ -1,17 +1,15 @@
 import Combine
 import Foundation
 
-typealias CoinSymbol = String
+typealias CoinID = Int
 
 struct CoinPriceClient {
-    let coinPrices: ([CoinSymbol]?) async throws -> [CoinSymbol: CoinPriceData]
-}
-
-struct CoinPriceResponse: Decodable {
-    let data: [CoinPriceData]
+    let listedCoins: () async throws -> [CoinPriceData]
+    let latestPrices: ([CoinID]) async throws -> [CoinID: CoinPriceData]
 }
 
 struct CoinPriceData: Decodable {
+    let id: Int
     let name: String
     let symbol: String
     let quote: [String: CoinPriceQuote]
@@ -36,63 +34,69 @@ struct CoinPriceQuote: Decodable {
 }
 
 extension CoinPriceClient {
-    private static var apiKey: String { "e3ef21f0-63cb-4979-87a7-0b03713e91bd" }
-
-    private static var coinsURL: URL { URL(string: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest")! }
-
-    private static func request(url: URL) -> URLRequest {
-        var request = URLRequest(url: url)
-        request.setValue("application/json", forHTTPHeaderField: "Accepts")
-        request.setValue(apiKey, forHTTPHeaderField: "X-CMC_PRO_API_KEY")
-        return request
-    }
-
     static let live: Self = {
-        return .init(
-            coinPrices: { symbols in
-                let url = CoinPriceClient.coinsURL
-                let (data, _) = try await URLSession.shared.data(for: CoinPriceClient.request(url: url))
-                let priceData = try JSONDecoder.isoDecoder.decode(CoinPriceResponse.self, from: data).data
-                var result: [CoinSymbol: CoinPriceData] = [:]
-                for priceDatum in priceData {
-                    result[priceDatum.symbol] = priceDatum
-                }
-                return result
+        .init(
+            listedCoins: {
+                let (data, _) = try await URLSession.shared.data(for: .listedCoins())
+                return try JSONDecoder.isoDecoder.decode(ListedCoinsResponse.self, from: data).data
+            },
+            latestPrices: { ids in
+                let (data, _) = try await URLSession.shared.data(for: .latestcoinPrices(ids))
+                return try JSONDecoder.isoDecoder.decode(LatestPricesResponse.self, from: data).data
             }
         )
     }()
+}
 
-    //        url.append(
-    //            queryItems: [
-    //                .init(name: "start", value: "1"),
-    //                .init(name: "limit", value: "100"),
-    //                .init(name: "convert", value: "USD")
-    //            ]
-    //        )
+private struct ListedCoinsResponse: Decodable {
+    let data: [CoinPriceData]
+}
+
+private struct LatestPricesResponse: Decodable {
+    let data: [CoinID: CoinPriceData]
 }
 
 // MARK: Utilities
 
-extension URLRequest {
+private extension URLRequest {
     private static let apiKey: String = "e3ef21f0-63cb-4979-87a7-0b03713e91bd"
 
-    private static let coinsURL = URL(string: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest")!
+    private static let listingsURL = URL(string: "https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest")!
 
-    static func coinPrices(_ symbols: [CoinSymbol]? = nil) {
-        
+    private static let latestPricesURL = URL(string: "https://pro-api.coinmarketcap.com/v2/cryptocurrency/quotes/latest")!
+
+    static func listedCoins() -> Self {
+        URLRequest(url: listingsURL)
+            .withHeaders
     }
 
+    static func latestcoinPrices(_ ids: [CoinID]) -> Self {
+        URLRequest(url: latestPricesURL.withIDs(ids))
+            .withHeaders
+    }
 
-    private static func requestWithHeaders(for url: URL) -> Self {
-        var request = URLRequest(url: url)
+    private var withHeaders: Self {
+        var request = self
         request.setValue("application/json", forHTTPHeaderField: "Accepts")
-        request.setValue(apiKey, forHTTPHeaderField: "X-CMC_PRO_API_KEY")
+        request.setValue(Self.apiKey, forHTTPHeaderField: "X-CMC_PRO_API_KEY")
         return request
     }
-
 }
 
-extension JSONDecoder {
+private extension URL {
+    func withIDs(_ ids: [CoinID]) -> URL {
+        var url = self
+        url.append(
+            queryItems: [
+                .init(name: "id", value: ids.map(String.init).joined(separator: ",")),
+            ]
+        )
+
+        return url
+    }
+}
+
+private extension JSONDecoder {
     static let isoDecoder = {
         let decoder = JSONDecoder()
         let formatter = DateFormatter()

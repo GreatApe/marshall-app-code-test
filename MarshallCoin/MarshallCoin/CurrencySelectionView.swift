@@ -1,5 +1,22 @@
 import SwiftUI
 
+struct CurrencySelectionView: View {
+    let viewStates: [CurrencyViewState]
+    let onSelect: (FiatCurrency) -> Void
+
+    var body: some View {
+        ScrollView(.horizontal) {
+            HStack(spacing: 8) {
+                ForEach(viewStates) { viewState in
+                    CurrencyView(viewState: viewState, onTap: onSelect)
+                }
+            }
+            .padding(.horizontal, 20)
+        }
+        .scrollIndicators(.never)
+    }
+}
+
 struct CurrencyViewState: Equatable, Identifiable {
     let id: FiatCurrency
     let isSelected: Bool
@@ -15,13 +32,15 @@ struct CurrencyViewState: Equatable, Identifiable {
 
 struct CurrencyView: View {
     @ScaledMetric
-    private var width: CGFloat = 80
+    private var width: CGFloat = 60
 
     let viewState: CurrencyViewState
-    let onTap: () -> Void
+    let onTap: (FiatCurrency) -> Void
 
     var body: some View {
-        Button(action: onTap) {
+        Button {
+            onTap(viewState.id)
+        } label: {
             VStack {
                 Text(viewState.name)
                     .bold()
