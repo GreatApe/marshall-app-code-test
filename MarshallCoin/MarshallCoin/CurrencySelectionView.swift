@@ -48,8 +48,8 @@ struct CurrencyView: View {
 
                 switch viewState.status {
                 case .isBaseCurrency:
-                    Text("123") // Invisible dummy to ensure layout
-                        .opacity(0)
+                    Text("1")
+                        .foregroundStyle(.white.opacity(0.7))
                 case .unavailable:
                     Text("N/A")
                         .foregroundStyle(.red)

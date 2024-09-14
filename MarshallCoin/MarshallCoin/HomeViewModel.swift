@@ -56,6 +56,9 @@ class HomeViewModel {
     func addToSelection(_ coin: CoinID) {
         assert(!selectedCoins.contains(coin), "Should not be possible to add already selected coin")
         selectedCoins.append(coin)
+        Task {
+            await self.updateCoinPrices()
+        }
     }
 
     func updateCoinPrices() async {
@@ -108,8 +111,14 @@ class HomeViewModel {
             return nil
         }
 
+        guard let quoteUSD = coinPrices[coin]?.quoteUSD else {
+            assertionFailure("We should always have the `quoteUSD` in `coinPrices` for the selected coin")
+            return nil
+        }
+
         return .init(
-            priceVM: priceVM,
+            priceVM: priceVM, 
+            details: .init(marketCap: quoteUSD.marketCap * fiatExchangeRate, volume24g: quoteUSD.volume24h * fiatExchangeRate),
             fiatCurrency: selectedCurrency,
             fiatExchangeRate: fiatExchangeRate, 
             coinPriceClient: coinPriceClient
@@ -148,7 +157,7 @@ class HomeViewModel {
     }
     
     private func status(for currency: FiatCurrency) -> CurrencyViewState.Status {
-        if currency.isBaseCurrency { return .isBaseCurrency }
+        if currency.isBase { return .isBaseCurrency }
         guard let (rate, date) = exchangeRates[currency] else { return .unavailable }
         let daysOld = -date.timeIntervalSinceNow / (24 * 60 * 60)
         return .available(rate, outdated: daysOld > Double(maxDaysOld))
@@ -172,25 +181,18 @@ class HomeViewModel {
 
 extension FiatCurrency {
     var displayName: String {
-        switch self {
-        case .usd:
-            "USD"
-        case .sek:
-            "SEK"
-        case .dkk:
-            "DKK"
-        case .nok:
-            "NOK"
-        }
+        rawValue
     }
 
     // Extra decimals compared to USD
     var extraDecimals: Int {
         switch self {
-        case .usd:
+        case .usd, .eur:
             0
         case .sek, .dkk, .nok:
             -1
+        case .yen:
+            -2
         }
     }
 }

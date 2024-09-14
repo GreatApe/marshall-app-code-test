@@ -79,7 +79,13 @@ struct CoinPriceView: View {
                 }
             }
         }
-        .padding(.horizontal, 12)
+        .inCard
+    }
+}
+
+extension View {
+    var inCard: some View {
+        padding(.horizontal, 12)
         .padding(.vertical, 8)
         .contentShape(Rectangle())
         .background {

@@ -20,6 +20,7 @@
 		A44615B12C94D59900B9B507 /* CoinPriceClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B02C94D59900B9B507 /* CoinPriceClient.swift */; };
 		A44615B32C95CFCD00B9B507 /* CoinPricesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */; };
 		A44615B52C95DBFD00B9B507 /* CoinDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */; };
+		A44615B72C95F7A400B9B507 /* CoinDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +57,7 @@
 		A44615B02C94D59900B9B507 /* CoinPriceClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinPriceClient.swift; sourceTree = "<group>"; };
 		A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinPricesView.swift; sourceTree = "<group>"; };
 		A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailsView.swift; sourceTree = "<group>"; };
+		A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailsViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 				A44615822C945FEF00B9B507 /* HomeView.swift */,
 				A44615AA2C94D23900B9B507 /* CurrencySelectionView.swift */,
 				A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */,
+				A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */,
 				A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */,
 				A44615AC2C94D2D400B9B507 /* FiatCurrencyClient.swift */,
 				A44615B02C94D59900B9B507 /* CoinPriceClient.swift */,
@@ -276,6 +279,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A44615832C945FEF00B9B507 /* HomeView.swift in Sources */,
+				A44615B72C95F7A400B9B507 /* CoinDetailsViewModel.swift in Sources */,
 				A44615B32C95CFCD00B9B507 /* CoinPricesView.swift in Sources */,
 				A44615B52C95DBFD00B9B507 /* CoinDetailsView.swift in Sources */,
 				A44615AD2C94D2D400B9B507 /* FiatCurrencyClient.swift in Sources */,

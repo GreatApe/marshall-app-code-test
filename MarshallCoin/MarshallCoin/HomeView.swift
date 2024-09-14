@@ -1,16 +1,10 @@
 import SwiftUI
 
 struct HomeView: View {
-    @State private var vm = HomeViewModel(
-        fiatCurrencyClient: .mock,
-        currencies: [.usd, .sek, .dkk],
-        coinPriceClient: .live,
-        coins: [1, 1027]
-    )
-
     @State private var showSelectionSheet: Bool = false
-
     @State private var detailsVM: CoinDetailsViewModel? = nil
+
+    let vm: HomeViewModel
 
     var body: some View {
         VStack(spacing: 0) {
@@ -30,6 +24,9 @@ struct HomeView: View {
                     showSelectionSheet.toggle()
                 }
                 .padding(.top, 10)
+            }
+            .refreshable {
+                await vm.updateCoinPrices()
             }
         }
         .background(.gray)
