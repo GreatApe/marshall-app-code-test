@@ -7,7 +7,7 @@ struct FiatCurrencyClient {
 
 extension FiatCurrencyClient {
     static let live: Self = {
-        let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .dkk: (6.5, .now), .sek: (10, .now)])
+        let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .eur: (0.9, .now), .dkk: (6.74, .now), .sek: (10.24, .now)])
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
 
@@ -37,8 +37,7 @@ extension FiatCurrencyClient {
     }()
 
     static let mock: Self = {
-        let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .dkk: (6.5, .now), .sek: (10, .now)])
-
+        let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .eur: (0.9, .now), .dkk: (6.5, .now), .sek: (10, .now)])
 
         Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
             let newRates = publisher.value.mapValues {
