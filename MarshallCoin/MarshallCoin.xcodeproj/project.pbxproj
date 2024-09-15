@@ -21,6 +21,7 @@
 		A44615B32C95CFCD00B9B507 /* CoinPricesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */; };
 		A44615B52C95DBFD00B9B507 /* CoinDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */; };
 		A44615B72C95F7A400B9B507 /* CoinDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */; };
+		A45F7BF42C96F41E0082CADF /* CoinSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A45F7BF32C96F41E0082CADF /* CoinSelectionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +59,7 @@
 		A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinPricesView.swift; sourceTree = "<group>"; };
 		A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailsView.swift; sourceTree = "<group>"; };
 		A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinDetailsViewModel.swift; sourceTree = "<group>"; };
+		A45F7BF32C96F41E0082CADF /* CoinSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CoinSelectionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,14 +111,10 @@
 			isa = PBXGroup;
 			children = (
 				A44615802C945FEF00B9B507 /* MarshallCoinApp.swift */,
-				A44615AE2C94D30700B9B507 /* HomeViewModel.swift */,
-				A44615822C945FEF00B9B507 /* HomeView.swift */,
-				A44615AA2C94D23900B9B507 /* CurrencySelectionView.swift */,
-				A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */,
-				A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */,
-				A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */,
-				A44615AC2C94D2D400B9B507 /* FiatCurrencyClient.swift */,
-				A44615B02C94D59900B9B507 /* CoinPriceClient.swift */,
+				A45F7BF52C96F45F0082CADF /* Home */,
+				A45F7BF22C96F3A20082CADF /* CoinDetails */,
+				A45F7BF62C96F53B0082CADF /* MiscViews */,
+				A45F7BF12C96F2D50082CADF /* Clients */,
 				A44615842C945FF000B9B507 /* Assets.xcassets */,
 				A44615862C945FF000B9B507 /* Preview Content */,
 			);
@@ -146,6 +144,43 @@
 				A446159D2C945FF000B9B507 /* MarshallCoinUITestsLaunchTests.swift */,
 			);
 			path = MarshallCoinUITests;
+			sourceTree = "<group>";
+		};
+		A45F7BF12C96F2D50082CADF /* Clients */ = {
+			isa = PBXGroup;
+			children = (
+				A44615AC2C94D2D400B9B507 /* FiatCurrencyClient.swift */,
+				A44615B02C94D59900B9B507 /* CoinPriceClient.swift */,
+			);
+			path = Clients;
+			sourceTree = "<group>";
+		};
+		A45F7BF22C96F3A20082CADF /* CoinDetails */ = {
+			isa = PBXGroup;
+			children = (
+				A44615B62C95F7A400B9B507 /* CoinDetailsViewModel.swift */,
+				A44615B42C95DBFD00B9B507 /* CoinDetailsView.swift */,
+			);
+			path = CoinDetails;
+			sourceTree = "<group>";
+		};
+		A45F7BF52C96F45F0082CADF /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				A44615AE2C94D30700B9B507 /* HomeViewModel.swift */,
+				A44615822C945FEF00B9B507 /* HomeView.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		A45F7BF62C96F53B0082CADF /* MiscViews */ = {
+			isa = PBXGroup;
+			children = (
+				A44615B22C95CFCD00B9B507 /* CoinPricesView.swift */,
+				A45F7BF32C96F41E0082CADF /* CoinSelectionView.swift */,
+				A44615AA2C94D23900B9B507 /* CurrencySelectionView.swift */,
+			);
+			path = MiscViews;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +315,7 @@
 			files = (
 				A44615832C945FEF00B9B507 /* HomeView.swift in Sources */,
 				A44615B72C95F7A400B9B507 /* CoinDetailsViewModel.swift in Sources */,
+				A45F7BF42C96F41E0082CADF /* CoinSelectionView.swift in Sources */,
 				A44615B32C95CFCD00B9B507 /* CoinPricesView.swift in Sources */,
 				A44615B52C95DBFD00B9B507 /* CoinDetailsView.swift in Sources */,
 				A44615AD2C94D2D400B9B507 /* FiatCurrencyClient.swift in Sources */,
@@ -450,7 +486,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MarshallCoin/Preview Content\"";
-				DEVELOPMENT_TEAM = 7DR7SL32UW;
+				DEVELOPMENT_TEAM = FCKFZCVFD6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -479,7 +515,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MarshallCoin/Preview Content\"";
-				DEVELOPMENT_TEAM = 7DR7SL32UW;
+				DEVELOPMENT_TEAM = FCKFZCVFD6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;

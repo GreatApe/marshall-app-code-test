@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: Main view
+
 struct CurrencySelectionView: View {
     let viewStates: [CurrencyViewState]
     let onSelect: (FiatCurrency) -> Void
@@ -17,6 +19,10 @@ struct CurrencySelectionView: View {
     }
 }
 
+// MARK: Helper views
+
+// ViewState
+
 struct CurrencyViewState: Equatable, Identifiable {
     let id: FiatCurrency
     let isSelected: Bool
@@ -29,6 +35,8 @@ struct CurrencyViewState: Equatable, Identifiable {
         case available(Double, outdated: Bool)
     }
 }
+
+// View
 
 struct CurrencyView: View {
     @ScaledMetric

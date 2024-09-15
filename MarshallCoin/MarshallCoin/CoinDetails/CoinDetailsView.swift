@@ -1,6 +1,8 @@
 import SwiftUI
 import Charts
 
+// MARK: Main View
+
 struct CoinDetailsView: View {
     @Environment(\.dismiss) private var dismiss
 
@@ -73,6 +75,8 @@ struct CoinDetailsView: View {
         }
     }
 }
+
+// MARK: Helper Views
 
 struct CoinDetailView: View {
     let label: String

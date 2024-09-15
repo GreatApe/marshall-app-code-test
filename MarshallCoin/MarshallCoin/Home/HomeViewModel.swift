@@ -3,6 +3,9 @@ import Combine
 
 @Observable
 class HomeViewModel {
+
+    // Constants
+
     private let maxDaysOld: Int = 7
     private let decimals: [CoinID: Int] = [1: 0, 2: 2, 52: 3, 24478: 8, 1027: 0, 5426: 2]
     private let defaultDecimals: Int = 2

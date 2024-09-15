@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: Main view
+
 struct CoinPricesView: View {
     let viewStates: [CoinPriceViewState]
     let onSelect: (CoinID) -> Void
@@ -33,6 +35,10 @@ struct CoinPricesView: View {
     }
 }
 
+// MARK: Helper Views
+
+// ViewState
+
 struct CoinPriceViewState: Equatable, Identifiable {
     let id: Int
     let symbol: String
@@ -49,6 +55,8 @@ struct CoinPriceViewState: Equatable, Identifiable {
         }
     }
 }
+
+// View
 
 struct CoinPriceView: View {
     let viewState: CoinPriceViewState
@@ -82,6 +90,8 @@ struct CoinPriceView: View {
         .inCard
     }
 }
+
+// View Modifier
 
 extension View {
     var inCard: some View {

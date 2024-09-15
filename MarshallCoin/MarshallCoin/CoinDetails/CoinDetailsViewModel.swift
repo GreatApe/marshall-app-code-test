@@ -1,5 +1,7 @@
 import SwiftUI
 
+// MARK: View Model
+
 @Observable
 class CoinDetailsViewModel {
     let coinPriceClient: CoinPriceClient
@@ -44,6 +46,8 @@ class CoinDetailsViewModel {
         let volume24g: Double
     }
 }
+
+// MARK: Extensions
 
 extension CoinDetailsViewModel: Identifiable {
     var id: CoinID { priceVM.id }
