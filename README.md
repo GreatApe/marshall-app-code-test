@@ -63,6 +63,10 @@ let liveCoinPriceProvider = CoinPriceProvider(
 ```
 This approach has advantages and drawbacks. It is more flexible in some ways, more limited in others.
 
+#### Error handling
+
+Most errors are not handled at all, I just silently ignore it e.g. an API returns an error. The only exception is that I have added some assertions in places where we want to catch the situation where the developer makes a change that violates the assumptions, like selects a coin that is not available for selection.
+
 ### Screenshots
 
 <img src="CoinList.png" width="200"><img src="CoinDetails.png" width="200"><img src="AddingCoins.png" width="200"><img src="ContextMenu.png" width="200">
