@@ -3,7 +3,7 @@ import SwiftUI
 @main
 struct MarshallCoinApp: App {
     @State private var vm = HomeViewModel(
-        fiatCurrencyClient: .mock,
+        fiatCurrencyClient: .live,
         currencies: [.usd, .eur, .sek, .dkk],
         coinPriceClient: .live,
         coins: [1, 1027]
