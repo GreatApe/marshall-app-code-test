@@ -6,49 +6,42 @@ struct FiatCurrencyClient {
 }
 
 extension FiatCurrencyClient {
+    private static let startValues: FiatExchangeRates = [.usd: (1, .now), .eur: (0.9, .now), .dkk: (6.74, .now), .sek: (10.24, .now)]
+
     static let live: Self = {
-        let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .eur: (0.9, .now), .dkk: (6.74, .now), .sek: (10.24, .now)])
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
 
-        @Sendable func updateRates() {
-            Task { @MainActor in
-                do {
-                    let (data, _) = try await URLSession.shared.data(for: .fixer(.rates))
-                    let newRates = try decoder.decode(FiatExchaneRateResponse.self, from: data).newRates(base: .base)
-                    publisher.value.merge(newRates) { $1 }
-                } catch {
-                    print("Failed to update exchange rates: \(error)")
-                }
-            }
-        }
-
-        updateRates()
-
-        Timer.scheduledTimer(withTimeInterval: 5 * 60, repeats: true) { _ in
-            updateRates()
+        func newRatesPublisher() -> AnyPublisher<FiatExchangeRates, Never> {
+            URLSession.shared.dataTaskPublisher(for: .fixer(.rates))
+                .tryMap { try decoder.decode(FiatExchaneRateResponse.self, from: $0.data).newRates(base: .base) }
+                .replaceError(with: [:])
+                .eraseToAnyPublisher()
         }
 
         return .init(exchangeRates: { currencies in
-            publisher
+            Timer.publish(every: 5 * 60, on: .main, in: .default)
+                .autoconnect()
+                .flatMap { _ in newRatesPublisher() }
                 .map { $0.filter { currencies.contains($0.key) } }
+                .prepend(startValues)
                 .eraseToAnyPublisher()
         })
     }()
 
     static let mock: Self = {
-        let publisher = CurrentValueSubject<FiatExchangeRates, Never>([.usd: (1, .now), .eur: (0.9, .now), .dkk: (6.5, .now), .sek: (10, .now)])
-
-        Timer.scheduledTimer(withTimeInterval: 10, repeats: true) { _ in
-            let newRates = publisher.value.mapValues {
-                ($0.rate * Double.random(in: 0.98...1.02), Date.now)
-            }
-            publisher.value.merge(newRates) { $1 }
-        }
-
         return .init(exchangeRates: { currencies in
-            publisher
-                .map { $0.filter { currencies.contains($0.key) } }
+            var startValues = startValues.filter { currencies.contains($0.key) }
+            for currency in currencies where startValues[currency] == nil {
+                startValues[currency] = (.random(in: 1...10), .now)
+            }
+            func randomValues() -> FiatExchangeRates {
+                startValues.mapValues { ($0.rate * Double.random(in: 0.98...1.02), Date.now) }
+            }
+            return Timer.publish(every: 10, on: .main, in: .default)
+                .autoconnect()
+                .map { _ in randomValues() }
+                .prepend(startValues)
                 .eraseToAnyPublisher()
         })
     }()
