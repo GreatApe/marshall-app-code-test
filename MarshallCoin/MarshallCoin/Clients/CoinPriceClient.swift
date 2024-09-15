@@ -2,23 +2,34 @@ import Combine
 import Foundation
 
 typealias CoinID = Int
+typealias ValuePublisher<T> = AnyPublisher<T, Never>
 
 struct CoinPriceClient {
     let listedCoins: () async throws -> [CoinPriceData]
-    let latestPrices: ([CoinID]) async throws -> [CoinID: CoinPriceData]
+    let prices: (ValuePublisher<[CoinID]>) -> ValuePublisher<[CoinID: CoinPriceData]>
     let priceHistory: (CoinID) async throws -> [DatedQuote]
 }
 
 extension CoinPriceClient {
     static let live: Self = {
-        .init(
+        func pricePublisher(ids: [CoinID]) -> ValuePublisher<[CoinID: CoinPriceData]> {
+            URLSession.shared.dataTaskPublisher(for: .cmc(.latestPrices(for: ids)))
+                .tryMap { try JSONDecoder.isoDecoder.decode(LatestPricesResponse.self, from: $0.data).data }
+                .replaceError(with: [:])
+                .eraseToAnyPublisher()
+        }
+
+        return .init(
             listedCoins: {
                 let (data, _) = try await URLSession.shared.data(for: .cmc(.listings))
                 return try JSONDecoder.isoDecoder.decode(ListedCoinsResponse.self, from: data).data
             },
-            latestPrices: { ids in
-                let (data, _) = try await URLSession.shared.data(for: .cmc(.latestPrices(for: ids)))
-                return try JSONDecoder.isoDecoder.decode(LatestPricesResponse.self, from: data).data
+            prices: { ids in
+                Timer.publish(every: 10, on: .main, in: .default)
+                    .autoconnect()
+                    .combineLatest(ids)
+                    .flatMap { pricePublisher(ids: $1) }
+                    .eraseToAnyPublisher()
             },
             priceHistory: { id in
                 let (data, _) = try await URLSession.shared.data(for: .cmc(.priceHistory(.daily, for: id, count: 30)))
@@ -32,8 +43,11 @@ extension CoinPriceClient {
             listedCoins: {
                 [.random(id: 1), .random(id: 2), .random(id: 3)]
             },
-            latestPrices: { ids in
-                Dictionary(ids.map { ($0, CoinPriceData.random(id: $0)) }) { $1 }
+            prices: { ids in
+                ids.map { idValues in
+                    Dictionary(idValues.map { ($0, CoinPriceData.random(id: $0)) }) { $1 }
+                }
+                .eraseToAnyPublisher()
             },
             priceHistory: { _ in
                 .random()
@@ -46,8 +60,11 @@ extension CoinPriceClient {
             listedCoins: {
                 [.testValue(id: 1), .testValue(id: 2)]
             },
-            latestPrices: { ids in
-                Dictionary(ids.map { ($0, CoinPriceData.testValue(id: $0)) }) { $1 }
+            prices: { ids in
+                ids.map { idValues in
+                    Dictionary(idValues.map { ($0, CoinPriceData.testValue(id: $0)) }) { $1 }
+                }
+                .eraseToAnyPublisher()
             },
             priceHistory: { _ in
                 .testValue

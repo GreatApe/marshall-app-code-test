@@ -27,9 +27,6 @@ struct HomeView: View {
                 }
                 .padding(.top, 10)
             }
-            .refreshable {
-                await vm.updateCoinPrices()
-            }
         }
         .background(.gray)
         .task {

@@ -23,7 +23,8 @@ class HomeViewModel {
 
     // Coin properties
 
-    private var selectedCoins: [CoinID]
+    private var selectedCoins: CurrentValueSubject<[CoinID], Never> = .init([])
+
     private var coinPrices: [CoinID: CoinPriceData] = [:]
 
     // Fiat currency interface
@@ -53,29 +54,16 @@ class HomeViewModel {
     }
 
     func removeFromSelection(_ coin: CoinID) {
-        selectedCoins.removeAll { $0 == coin }
+        selectedCoins.value.removeAll { $0 == coin }
     }
 
     func addToSelection(_ coin: CoinID) {
-        assert(!selectedCoins.contains(coin), "Should not be possible to add already selected coin")
-        selectedCoins.append(coin)
-        Task {
-            await self.updateCoinPrices()
-        }
-    }
-
-    func updateCoinPrices() async {
-        do {
-            let newPrices = try await coinPriceClient.latestPrices(selectedCoins)
-            // Keep an existing price if the new is missing for some reason
-            coinPrices.merge(newPrices) { $1.quoteUSD == nil ? $0 : $1 }
-        } catch {
-            print("Failed to load latest coin prices: \(error)")
-        }
+        assert(!selectedCoins.value.contains(coin), "Should not be possible to add already selected coin")
+        selectedCoins.value.append(coin)
     }
 
     var coinPriceViewStates: [CoinPriceViewState] {
-        selectedCoins.compactMap { id in
+        selectedCoins.value.compactMap { id in
             guard let coinData = coinPrices[id] else { return nil }
             return .init(
                 id: id,
@@ -89,7 +77,7 @@ class HomeViewModel {
 
     var availableCoins: [CoinPriceViewState] {
         coinPrices.values
-            .filter { !selectedCoins.contains($0.id) }
+            .filter { !selectedCoins.value.contains($0.id) }
             .sorted { $0.symbol < $1.symbol }
             .map { coin in
                 .init(
@@ -136,7 +124,6 @@ class HomeViewModel {
     ) {
         self.currencies = currencies
         self.coinPriceClient = coinPriceClient
-        self.selectedCoins = coins
 
         // The fiat currencies we care about will not change, so we can set this up here
         fiatCurrencyClient
@@ -145,6 +132,16 @@ class HomeViewModel {
                 self?.exchangeRates.merge($0) { $1 }
             }
             .store(in: &bag)
+
+        coinPriceClient
+            .prices(selectedCoins.eraseToAnyPublisher())
+            .sink { [weak self] newPrices in
+                // Ignore new values that lack quoteUSD
+                self?.coinPrices.merge(newPrices) { $1.quoteUSD == nil ? $0 : $1 }
+            }
+            .store(in: &bag)
+
+        selectedCoins.value = coins
     }
 
     private func decimalCount(for coin: CoinID, in currency: FiatCurrency) -> Int {
